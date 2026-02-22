@@ -26,7 +26,6 @@ button{background:#0b6ef7;color:#fff;border:none;font-weight:700;cursor:pointer}
 .modal-back{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center}
 .modal{background:#fff;padding:20px;border-radius:14px;width:340px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:10px;display:none}
-.step{margin:8px 0;font-weight:600}
 </style>
 </head>
 
@@ -75,8 +74,6 @@ Wyloguj
 <div class="toast" id="toast"></div>
 
 <script>
-const ZANGI_LINK="https://services.zangi.com/dl/conversation/3402149595";
-
 const $=id=>document.getElementById(id);
 const fmt=n=>n.toLocaleString('pl-PL');
 
@@ -176,43 +173,10 @@ $('billsBtn').onclick=()=>{
 
 $('transferBtn').onclick=()=>{
   openModal(`
-    <h3>Przelew bankowy</h3>
-    <input id="tn" placeholder="Nazwa banku">
-    <input id="ta" placeholder="Numer konta">
-    <input id="tm" type="number" placeholder="Kwota (CLP)">
-    <button id="go">Kontynuuj</button>
+    <h3>Transfer</h3>
+    <p><strong>Karty zdrapki nie są akceptowane. Karty zdrapki służą do odblokowania konta, a karty papierowe do sfinalizowania transakcji</strong></p>
+    <button onclick="closeModal()">Close</button>
   `);
-
-  $('go').onclick=()=>{
-    const n=$('tn').value,a=$('ta').value,m=Number($('tm').value);
-    if(!n||!a||m<=0){toast('Uzupełnij wszystkie pola');return;}
-
-    openModal(`
-      <h3>Przetwarzanie</h3>
-      <div class="step" id="s1">Krok 1: Weryfikacja danych</div>
-      <div class="step muted" id="s2">Krok 2: Wysyłanie środków</div>
-      <div class="step muted" id="s3">Krok 3: Finalizacja transakcji</div>
-    `);
-
-    setTimeout(()=>{$('s1').classList.add('muted');$('s2').classList.remove('muted')},1500);
-    setTimeout(()=>{$('s2').classList.add('muted');$('s3').classList.remove('muted')},3000);
-
-    setTimeout(()=>{
-      tx.push({type:'Przelew',name:n,account:a,amount:m,date:new Date().toDateString()});
-      balance-=m; render();
-      openModal(`
-        <div class="card">Karta Steam: potwierdzenie odbiorcy nie zostało ukończone</div>
-        <div class="card">Karta Steam: weryfikacja kwoty nie została ukończona</div>
-        <div class="card">Karta Steam: kontrola bezpieczeństwa — pozostały 3 karty do zakończenia</div>
-        <button id="final">Kliknij Kontynuuj, aby przesłać pozostałe 3 karty Steam i zakończyć przelew</button>
-      `);
-      $('final').onclick=()=>{
-        window.open(ZANGI_LINK,'_blank');
-        closeModal();
-        toast('Przelew zakończony');
-      };
-    },4500);
-  };
 };
 
 $('logoutBtn').onclick=()=>{
