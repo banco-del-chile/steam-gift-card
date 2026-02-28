@@ -3,61 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfel Real — CLP</title>
+<title>Prawdziwy Portfel — PLN</title>
 
 <style>
 :root{
-  --bg:#fafafa; --card:#0b6ef7; --radius:14px; --panel:#fff; --muted:#777;
+  --bg:linear-gradient(180deg,#6f8fd6 0%,#3e63b8 45%,#0e1a33 100%);
+  --primary:#3e63b8;
+  --panel:#ffffff;
+  --muted:#777;
+  --radius:16px;
 }
-body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg)}
-.container{background:#fff;padding:30px;width:320px;margin:40px auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
-input,button{width:100%;padding:12px;margin-bottom:12px;border-radius:8px;border:1px solid #ccc}
-button{background:#0b6ef7;color:#fff;border:none;font-weight:700;cursor:pointer}
-.app{max-width:900px;margin:20px auto;padding:12px;display:none}
-.card{background:var(--card);color:#fff;border-radius:14px;padding:20px;margin-bottom:14px}
-.balance{font-size:1.8rem;font-weight:800}
-.actions{display:flex;gap:12px;margin:14px 0}
-.action{flex:1;background:#0b6ef7;color:#fff;text-align:center;padding:12px;border-radius:12px;cursor:pointer;font-weight:700}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.panel{background:#fff;padding:14px;border-radius:12px}
-.tx-list{max-height:360px;overflow:auto}
-.tx{display:flex;justify-content:space-between;padding:10px;background:#f7f7f7;border-radius:8px;margin-bottom:8px}
-.muted{color:#777;font-size:.85rem}
-.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center}
-.modal{background:#fff;padding:20px;border-radius:14px;width:340px}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:10px;display:none}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Arial;
+  background:var(--bg);
+  min-height:100vh;
+}
+.hidden{display:none}
+
+.header{
+  padding:14px 16px;
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.header span{font-weight:700}
+
+.app{
+  max-width:900px;
+  margin:0 auto;
+  padding:14px;
+  padding-bottom:90px;
+}
+.card{
+  background:linear-gradient(160deg,#4f7cf0,#2e4fa3);
+  color:#fff;
+  padding:20px;
+  border-radius:var(--radius);
+}
+.balance{font-size:2rem;font-weight:800;margin-top:6px}
+
+.actions{
+  display:flex;
+  gap:12px;
+  margin:16px 0;
+}
+.action{
+  flex:1;
+  background:linear-gradient(160deg,#4f7cf0,#2e4fa3);
+  color:#fff;
+  text-align:center;
+  padding:14px;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.panel{
+  background:rgba(255,255,255,.92);
+  border-radius:14px;
+  padding:14px;
+}
+.tx{
+  background:rgba(62,99,184,.1);
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+}
+.muted{color:var(--muted);font-size:.85rem;margin-top:10px}
+
+.frozen-note{
+  margin-top:16px;
+  padding:14px;
+  border-radius:12px;
+  background:rgba(255,0,0,.08);
+  color:#900;
+  font-weight:600;
+  text-align:center;
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(12px);
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+}
+.nav-item{
+  color:#cfd6ff;
+  text-align:center;
+  font-size:.75rem;
+  cursor:pointer;
+}
+.nav-item.active{color:#1de9b6}
+.nav-item div{font-size:20px}
+
+.modal-back{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.modal{
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  width:320px;
+  text-align:center;
+}
+
+.toast{
+  position:fixed;
+  bottom:100px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  color:#0ff;
+  padding:10px 16px;
+  border-radius:10px;
+  display:none;
+}
 </style>
 </head>
 
 <body>
 
-<div class="container" id="signup">
-  <h2>Rejestracja</h2>
-  <input id="name" placeholder="Imię i nazwisko">
-  <input id="phone" placeholder="Numer telefonu">
-  <button id="signupBtn">Zarejestruj się</button>
+<div class="header">
+  <span id="pageTitle">Strona główna</span>
+  <button onclick="logout()" style="background:#0003;color:#fff;border:none;padding:6px 10px;border-radius:8px">Wyloguj się</button>
 </div>
 
-<button id="logoutBtn" style="margin:12px auto;display:block;background:#eee;color:#111;font-weight:700">
-Wyloguj
-</button>
-
-<div class="app" id="app">
+<div class="app" id="home">
   <div class="card">
     <div>Saldo portfela</div>
-    <div class="balance" id="balance">0 CLP</div>
+    <div class="balance" id="balance">1 500 000,00 €</div>
   </div>
 
   <div class="actions">
-    <div class="action" id="transferBtn">Przelew</div>
-    <div class="action" id="withdrawBtn">Wypłata</div>
-    <div class="action" id="billsBtn">Opłać rachunki</div>
+    <div class="action" onclick="showFrozenModal()">Przelew</div>
+    <div class="action" onclick="showFrozenModal()">Wypłata</div>
+    <div class="action" onclick="showFrozenModal()">Opłać rachunki</div>
   </div>
 
   <div class="grid">
     <div class="panel">
       <strong>Historia transakcji</strong>
-      <div class="tx-list" id="txList"></div>
+      <div id="txList"></div>
     </div>
     <div class="panel">
       <strong>Informacje o koncie</strong>
@@ -67,6 +175,54 @@ Wyloguj
   </div>
 </div>
 
+<div class="app hidden" id="finance">
+  <div class="panel">
+    <h3>Finanse</h3>
+    <p class="muted">Analiza wydatków i przychodów</p>
+    <p><strong>Miesięczne wydatki:</strong> 615 000 €</p>
+    <p><strong>Oszczędności:</strong> 2 300 000 €</p>
+  </div>
+</div>
+
+<div class="app hidden" id="rewards">
+  <div class="panel">
+    <h3>Nagrody</h3>
+    <p class="muted">Dostępne punkty</p>
+    <h2>12 450 pkt</h2>
+    <button onclick="showFrozenModal()" style="width:100%;padding:12px;border-radius:12px;border:none;background:var(--primary);color:#fff">
+      Wymień nagrody
+    </button>
+  </div>
+</div>
+
+<div class="app hidden" id="cards">
+  <div class="panel">
+    <h3>Karty</h3>
+    <div class="card">
+      <div>Karta wirtualna</div>
+      <div class="balance">**** 4921</div>
+      <p class="muted">Aktywna</p>
+    </div>
+  </div>
+</div>
+
+<div class="app hidden" id="me">
+  <div class="panel">
+    <h3>Mój profil</h3>
+    <p><strong>Status:</strong> Zweryfikowane</p>
+    <p><strong>Kraj:</strong> Polska</p>
+    <p><strong>Waluta:</strong> €</p>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-item active" onclick="switchTab('home',this)"><div>🏠</div>Strona główna</div>
+  <div class="nav-item" onclick="switchTab('rewards',this)"><div>🎁</div>Nagrody</div>
+  <div class="nav-item" onclick="switchTab('finance',this)"><div>📈</div>Finanse</div>
+  <div class="nav-item" onclick="switchTab('cards',this)"><div>💳</div>Karty</div>
+  <div class="nav-item" onclick="switchTab('me',this)"><div>👤</div>Ja</div>
+</div>
+
 <div class="modal-back" id="modalBack">
   <div class="modal" id="modal"></div>
 </div>
@@ -74,115 +230,77 @@ Wyloguj
 <div class="toast" id="toast"></div>
 
 <script>
-const $=id=>document.getElementById(id);
-const fmt=n=>n.toLocaleString('pl-PL');
+let balanceValue = 1500000;
+let tx = [];
 
-let balance = Number(localStorage.getItem('balance')) || 30600000;
-let tx = JSON.parse(localStorage.getItem('tx') || '[]');
-let loggedIn = localStorage.getItem('loggedIn') === 'true';
-let generatedOTP = null;
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('pl-PL');
 
-function save(){
-  localStorage.setItem('balance', balance);
-  localStorage.setItem('tx', JSON.stringify(tx));
+function showToast(t){
+  toast.textContent=t;
+  toast.style.display='block';
+  setTimeout(()=>toast.style.display='none',2000);
 }
 
-function toast(m){
-  $('toast').textContent=m;
-  $('toast').style.display='block';
-  setTimeout(()=>$('toast').style.display='none',2000);
+function addFrozenNote(container){
+  if(container.querySelector('.frozen-note')) return;
+  const note=document.createElement('div');
+  note.className='frozen-note';
+  note.innerHTML='Konto zostało zamrożone po śmierci pana Bartek Kołodziej Szczepaniak';
+  container.appendChild(note);
 }
 
-function openModal(h){
-  $('modal').innerHTML=h;
-  $('modalBack').style.display='flex';
+function switchTab(id,el){
+  document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const app=$(id);
+  app.classList.remove('hidden');
+  el.classList.add('active');
+  pageTitle.textContent=el.innerText;
+  if(id!=='home') addFrozenNote(app);
 }
-function closeModal(){
-  $('modalBack').style.display='none';
+
+function showFrozenModal(){
+  modal.innerHTML=`
+    <h3>Konto zablokowane</h3>
+    <p class="muted">
+    To konto zostało zamrożone po śmierci<br>
+      <strong>pana Bartek Kołodziej Szczepaniak</strong>
+    </p>
+    <button onclick="modalBack.style.display='none'">Zamknij</button>
+  `;
+  modalBack.style.display='flex';
+}
+
+function logout(){
+  showToast('Wylogowano');
 }
 
 function render(){
-  $('balance').textContent=fmt(balance)+' CLP';
-  const l=$('txList'); l.innerHTML='';
-  tx.slice().reverse().forEach(t=>{
-    l.innerHTML+=`
-      <div class="tx">
-        <div>
-          <strong>${t.type}</strong>
-          <div class="muted">${t.name} • ${t.account}</div>
-          <div class="muted">${t.date}</div>
-        </div>
-        <strong>- ${fmt(t.amount)} CLP</strong>
-      </div>`;
+  balance.textContent = fmt(balanceValue)+' €';
+  txList.innerHTML='';
+  tx.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='tx';
+    d.innerHTML=`
+      <div>
+        <strong>${t.type}</strong>
+        <div class="muted">${t.name}</div>
+      </div>
+      <div><strong>- ${fmt(t.amount)} €</strong></div>
+    `;
+    txList.appendChild(d);
   });
-  save();
 }
 
-if(tx.length===0){
-  const a=[10000,20000,5000,100000,500000];
-  for(let i=1;i<=15;i++){
-    tx.push({type:'Przelew',name:'Klient '+i,account:'KONTO'+(100000+i),amount:a[i%a.length],date:new Date().toDateString()});
+(function(){
+  balance=document.getElementById('balance');
+  for(let i=1;i<=6;i++){
+    tx.push({type:'Przelew',name:'Klient '+i,amount:[5000,10000,100000][i%3]});
   }
-  save();
-}
-
-function showApp(){
-  $('signup').style.display='none';
-  $('app').style.display='block';
   render();
-}
-
-if(loggedIn) showApp();
-
-$('signupBtn').onclick=()=>{
-  if(!$('name').value||!$('phone').value){toast('Wprowadź dane');return;}
-  generatedOTP=Math.floor(100000+Math.random()*900000);
-  openModal(`
-    <h3>Weryfikacja OTP</h3>
-    <strong>${generatedOTP}</strong>
-    <input id="otp" placeholder="Wpisz kod OTP">
-    <button id="verify">Zweryfikuj</button>
-  `);
-  $('verify').onclick=()=>{
-    if(Number($('otp').value)===generatedOTP){
-      localStorage.setItem('loggedIn','true');
-      closeModal();
-      showApp();
-      toast('Logowanie zakończone sukcesem');
-    }else toast('Nieprawidłowy kod OTP');
-  };
-};
-
-$('withdrawBtn').onclick=()=>{
-  openModal(`<h3>Wypłata</h3><input placeholder="Kwota"><button onclick="closeModal()">Gotowe</button>`);
-};
-
-$('billsBtn').onclick=()=>{
-  openModal(`
-    <h3>Płatność rachunków</h3>
-    <input id="bn" placeholder="Nazwa rachunku">
-    <input id="ba" type="number" placeholder="Kwota">
-    <button id="pay">Zapłać</button>
-  `);
-  $('pay').onclick=()=>{
-    const a=Number($('ba').value);
-    tx.push({type:'Płatność rachunku',name:$('bn').value,account:'—',amount:a,date:new Date().toDateString()});
-    balance-=a; render(); closeModal();
-  };
-};
-
-$('transferBtn').onclick=()=>{
-  openModal(`
-    <h3>Transfer</h3>
-    <p><strong>witam przelew 20 000 zł na konto Agricole 51 1940 1076 6398 0148 0000 0000 należący do Pana KRZYSZTOFA wilk prawie udany ładowanie 90% z powodu słabego sygnału potrzebna jest kolejna zdrapka o wartości 210 zł aby zrealizować przelew jeżeli dostarczysz inną kartę Steam przelew zostanie zrealizowany na konto 51 1940 1076 6398 0148 0000 0000</strong></p>
-    <button onclick="closeModal()">Close</button>
-  `);
-};
-
-$('logoutBtn').onclick=()=>{
-  localStorage.clear();
-  location.reload();
-};
+})();
 </script>
+
 </body>
 </html>
