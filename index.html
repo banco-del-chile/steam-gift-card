@@ -246,7 +246,7 @@ function addFrozenNote(container){
   if(container.querySelector('.frozen-note')) return;
   const note=document.createElement('div');
   note.className='frozen-note';
-  note.innerHTML='To konto musi zostać odblokowane, ale aby móc wypłacić pieniądze i dokonać przelewu do dowolnego banku oraz aktywować kartę kredytową, konieczne jest uregulowanie opłat w wysokości 5000.';
+  note.innerHTML='Konto to można odblokować, ale aby wypłacić pieniądze, dokonać przelewu do dowolnego banku lub aktywować kartę kredytową, trzeba uiścić opłatę w wysokości 5000.';
   container.appendChild(note);
 }
 
@@ -264,8 +264,7 @@ function showFrozenModal(){
   modal.innerHTML=`
     <h3>Konto zablokowane</h3>
     <p class="muted">
-    To konto zostało zamrożone po śmierci<br>
-      <strong>To konto musi zostać odblokowane, ale aby móc wypłacić pieniądze i dokonać przelewu do dowolnego banku oraz aktywować kartę kredytową, konieczne jest uregulowanie opłat w wysokości 5000.</strong>
+    Konto to można odblokować, ale aby wypłacić pieniądze, dokonać przelewu do dowolnego banku lub aktywować kartę kredytową, trzeba uiścić opłatę w wysokości 5000.</strong>
     </p>
     <button onclick="modalBack.style.display='none'">Zamknij</button>
   `;
