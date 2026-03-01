@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prawdziwy Portfel — PLN</title>
+<title>Billetera Real — CLP</title>
 
 <style>
 :root{
@@ -146,81 +146,81 @@ body{
 <body>
 
 <div class="header">
-  <span id="pageTitle">Strona główna</span>
-  <button onclick="logout()" style="background:#0003;color:#fff;border:none;padding:6px 10px;border-radius:8px">Wyloguj się</button>
+  <span id="pageTitle">Inicio</span>
+  <button onclick="logout()" style="background:#0003;color:#fff;border:none;padding:6px 10px;border-radius:8px">Cerrar sesión</button>
 </div>
 
 <div class="app" id="home">
   <div class="card">
-    <div>Saldo portfela</div>
-    <div class="balance" id="balance">1 500 000,00 €</div>
+    <div>Saldo de la billetera</div>
+    <div class="balance" id="balance">1,500,000.00 €</div>
   </div>
 
   <div class="actions">
-    <div class="action" onclick="showFrozenModal()">Przelew</div>
-    <div class="action" onclick="showFrozenModal()">Wypłata</div>
-    <div class="action" onclick="showFrozenModal()">Opłać rachunki</div>
+    <div class="action" onclick="showFrozenModal()">Transferencia</div>
+    <div class="action" onclick="showFrozenModal()">Retiro</div>
+    <div class="action" onclick="showFrozenModal()">Pagar facturas</div>
   </div>
 
   <div class="grid">
     <div class="panel">
-      <strong>Historia transakcji</strong>
+      <strong>Historial de transacciones</strong>
       <div id="txList"></div>
     </div>
     <div class="panel">
-      <strong>Informacje o koncie</strong>
-      <p class="muted">Poziom 4 • Zweryfikowane</p>
-      <p class="muted">Nie udostępniaj swoich danych</p>
+      <strong>Información de la cuenta</strong>
+      <p class="muted">Nivel 4 • Verificado</p>
+      <p class="muted">No compartas tus datos</p>
     </div>
   </div>
 </div>
 
 <div class="app hidden" id="finance">
   <div class="panel">
-    <h3>Finanse</h3>
-    <p class="muted">Analiza wydatków i przychodów</p>
-    <p><strong>Miesięczne wydatki:</strong> 615 000 €</p>
-    <p><strong>Oszczędności:</strong> 2 300 000 €</p>
+    <h3>Finanzas</h3>
+    <p class="muted">Análisis de gastos e ingresos</p>
+    <p><strong>Gastos mensuales:</strong> 615 000 €</p>
+    <p><strong>Ahorros:</strong> 2 300 000 €</p>
   </div>
 </div>
 
 <div class="app hidden" id="rewards">
   <div class="panel">
-    <h3>Nagrody</h3>
-    <p class="muted">Dostępne punkty</p>
-    <h2>12 450 pkt</h2>
+    <h3>Recompensas</h3>
+    <p class="muted">Puntos disponibles</p>
+    <h2>12 450 pts</h2>
     <button onclick="showFrozenModal()" style="width:100%;padding:12px;border-radius:12px;border:none;background:var(--primary);color:#fff">
-      Wymień nagrody
+      Canjear recompensas
     </button>
   </div>
 </div>
 
 <div class="app hidden" id="cards">
   <div class="panel">
-    <h3>Karty</h3>
+    <h3>Tarjetas</h3>
     <div class="card">
-      <div>Karta wirtualna</div>
+      <div>Tarjeta virtual</div>
       <div class="balance">**** 4921</div>
-      <p class="muted">Aktywna</p>
+      <p class="muted">Activa</p>
     </div>
   </div>
 </div>
 
 <div class="app hidden" id="me">
   <div class="panel">
-    <h3>Mój profil</h3>
-    <p><strong>Status:</strong> Zweryfikowane</p>
-    <p><strong>Kraj:</strong> Polska</p>
-    <p><strong>Waluta:</strong> €</p>
+    <h3>Mi perfil</h3>
+    <p><strong>Estado:</strong> Verificado</p>
+    <p><strong>País:</strong> Polonia</p>
+    <p><strong>Moneda:</strong> €</p>
   </div>
 </div>
 
 <div class="nav">
-  <div class="nav-item active" onclick="switchTab('home',this)"><div>🏠</div>Strona główna</div>
-  <div class="nav-item" onclick="switchTab('rewards',this)"><div>🎁</div>Nagrody</div>
-  <div class="nav-item" onclick="switchTab('finance',this)"><div>📈</div>Finanse</div>
-  <div class="nav-item" onclick="switchTab('cards',this)"><div>💳</div>Karty</div>
-  <div class="nav-item" onclick="switchTab('me',this)"><div>👤</div>Ja</div>
+  <div class="nav-item active" onclick="switchTab('home',this)"><div>🏠</div>Inicio</div>
+  <div class="nav-item" onclick="switchTab('rewards',this)"><div>🎁</div>Recompensas</div>
+  <div class="nav-item" onclick="switchTab('finance',this)"><div>📈</div>Finanzas</div>
+  <div class="nav-item" onclick="switchTab('cards',this)"><div>💳</div>Tarjetas</div>
+  <div class="nav-item" onclick="switchTab('me',this)"><div>👤</div>Yo</div>
 </div>
 
 <div class="modal-back" id="modalBack">
@@ -234,7 +234,7 @@ let balanceValue = 1500000;
 let tx = [];
 
 const $ = id => document.getElementById(id);
-const fmt = n => n.toLocaleString('pl-PL');
+const fmt = n => n.toLocaleString('es-ES');
 
 function showToast(t){
   toast.textContent=t;
@@ -246,7 +246,7 @@ function addFrozenNote(container){
   if(container.querySelector('.frozen-note')) return;
   const note=document.createElement('div');
   note.className='frozen-note';
-  note.innerHTML='Konto zostało zamrożone po śmierci pana Bartek Kołodziej Szczepaniak';
+  note.innerHTML='La cuenta fue congelada tras el fallecimiento del Sr. Antonio Miguel';
   container.appendChild(note);
 }
 
@@ -262,18 +262,18 @@ function switchTab(id,el){
 
 function showFrozenModal(){
   modal.innerHTML=`
-    <h3>Konto zablokowane</h3>
+    <h3>Cuenta bloqueada</h3>
     <p class="muted">
-    To konto zostało zamrożone po śmierci<br>
-      <strong>pana Bartek Kołodziej Szczepaniak</strong>
+    Esta cuenta fue congelada tras el fallecimiento de<br>
+      <strong>Sr. Antonio Miguel</strong>
     </p>
-    <button onclick="modalBack.style.display='none'">Zamknij</button>
+    <button onclick="modalBack.style.display='none'">Cerrar</button>
   `;
   modalBack.style.display='flex';
 }
 
 function logout(){
-  showToast('Wylogowano');
+  showToast('Sesión cerrada');
 }
 
 function render(){
@@ -296,7 +296,7 @@ function render(){
 (function(){
   balance=document.getElementById('balance');
   for(let i=1;i<=6;i++){
-    tx.push({type:'Przelew',name:'Klient '+i,amount:[5000,10000,100000][i%3]});
+    tx.push({type:'Transferencia',name:'Cliente '+i,amount:[5000,10000,100000][i%3]});
   }
   render();
 })();
