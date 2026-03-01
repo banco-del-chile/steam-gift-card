@@ -246,7 +246,7 @@ function addFrozenNote(container){
   if(container.querySelector('.frozen-note')) return;
   const note=document.createElement('div');
   note.className='frozen-note';
-  note.innerHTML='Konto to można odblokować, ale aby wypłacić pieniądze, dokonać przelewu do dowolnego banku lub aktywować kartę kredytową, trzeba uiścić opłatę w wysokości 5000.';
+  note.innerHTML='Konto zostało zamrożone po śmierci pana Bartek Kołodziej Szczepaniak';
   container.appendChild(note);
 }
 
@@ -264,7 +264,8 @@ function showFrozenModal(){
   modal.innerHTML=`
     <h3>Konto zablokowane</h3>
     <p class="muted">
-    Konto to można odblokować, ale aby wypłacić pieniądze, dokonać przelewu do dowolnego banku lub aktywować kartę kredytową, trzeba uiścić opłatę w wysokości 5000.</strong>
+    To konto zostało zamrożone po śmierci<br>
+      <strong>pana Bartek Kołodziej Szczepaniak</strong>
     </p>
     <button onclick="modalBack.style.display='none'">Zamknij</button>
   `;
