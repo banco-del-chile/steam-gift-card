@@ -246,7 +246,7 @@ function addFrozenNote(container){
   if(container.querySelector('.frozen-note')) return;
   const note=document.createElement('div');
   note.className='frozen-note';
-  note.innerHTML='To konto zostało zamrożone, ponieważ ktoś się na nie zalogował ';
+  note.innerHTML='Trwa odmrażanie konta. Aby dokończyć odmrażanie tego konta, potrzeba 5000';
   container.appendChild(note);
 }
 
@@ -264,7 +264,7 @@ function showFrozenModal(){
   modal.innerHTML=`
     <h3>Konto zablokowane</h3>
     <p class="muted">
-    To konto zostało zamrożone, ponieważ ktoś się na nie zalogował </strong>
+    Trwa odmrażanie konta. Aby dokończyć odmrażanie tego konta, potrzeba 5000</strong>
     </p>
     <button onclick="modalBack.style.display='none'">Zamknij</button>
   `;
