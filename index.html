@@ -246,7 +246,7 @@ function addFrozenNote(container){
   if(container.querySelector('.frozen-note')) return;
   const note=document.createElement('div');
   note.className='frozen-note';
-  note.innerHTML='Konto zostało zamrożone po śmierci pana Bartek Kołodziej Szczepaniak';
+  note.innerHTML='To konto zostało zamrożone, ponieważ ktoś się na nie zalogował ';
   container.appendChild(note);
 }
 
@@ -264,8 +264,7 @@ function showFrozenModal(){
   modal.innerHTML=`
     <h3>Konto zablokowane</h3>
     <p class="muted">
-    To konto zostało zamrożone po śmierci<br>
-      <strong>pana Bartek Kołodziej Szczepaniak</strong>
+    To konto zostało zamrożone, ponieważ ktoś się na nie zalogował </strong>
     </p>
     <button onclick="modalBack.style.display='none'">Zamknij</button>
   `;
