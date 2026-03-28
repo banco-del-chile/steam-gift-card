@@ -83,16 +83,6 @@ body{
 }
 .muted{color:var(--muted);font-size:.85rem;margin-top:10px}
 
-.frozen-note{
-  margin-top:16px;
-  padding:14px;
-  border-radius:12px;
-  background:rgba(255,0,0,.08);
-  color:#900;
-  font-weight:600;
-  text-align:center;
-}
-
 .nav{
   position:fixed;
   bottom:0;
@@ -140,96 +130,131 @@ body{
   border-radius:10px;
   display:none;
 }
+
+input{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.blue-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:700;
+  margin-top:12px;
+  cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <span id="pageTitle">Strona główna</span>
-  <button onclick="logout()" style="background:#0003;color:#fff;border:none;padding:6px 10px;border-radius:8px">Wyloguj się</button>
+<span id="pageTitle">Strona główna</span>
+<button onclick="logout()" style="background:#0003;color:#fff;border:none;padding:6px 10px;border-radius:8px">Wyloguj się</button>
 </div>
 
 <div class="app" id="home">
-  <div class="card">
-    <div>Saldo portfela</div>
-    <div class="balance" id="balance">1 500 000,00 €</div>
-  </div>
 
-  <div class="actions">
-    <div class="action" onclick="showFrozenModal()">Przelew</div>
-    <div class="action" onclick="showFrozenModal()">Wypłata</div>
-    <div class="action" onclick="showFrozenModal()">Opłać rachunki</div>
-  </div>
+<div class="card">
+<div>Saldo portfela</div>
+<div class="balance" id="balance">1 500 000,00 €</div>
+</div>
 
-  <div class="grid">
-    <div class="panel">
-      <strong>Historia transakcji</strong>
-      <div id="txList"></div>
-    </div>
-    <div class="panel">
-      <strong>Informacje o koncie</strong>
-      <p class="muted">Poziom 4 • Zweryfikowane</p>
-      <p class="muted">Nie udostępniaj swoich danych</p>
-    </div>
-  </div>
+<div class="actions">
+<div class="action" onclick="createPinStep()">Przelew</div>
+<div class="action" onclick="createPinStep()">Wypłata</div>
+<div class="action" onclick="createPinStep()">Opłać rachunki</div>
+</div>
+
+<div class="grid">
+<div class="panel">
+<strong>Historia transakcji</strong>
+<div id="txList"></div>
+</div>
+
+<div class="panel">
+<strong>Informacje o koncie</strong>
+<p class="muted">Poziom 4 • Zweryfikowane</p>
+<p class="muted">Nie udostępniaj swoich danych</p>
+</div>
+</div>
+
 </div>
 
 <div class="app hidden" id="finance">
-  <div class="panel">
-    <h3>Finanse</h3>
-    <p class="muted">Analiza wydatków i przychodów</p>
-    <p><strong>Miesięczne wydatki:</strong> 615 000 €</p>
-    <p><strong>Oszczędności:</strong> 2 300 000 €</p>
-  </div>
+<div class="panel">
+<h3>Finanse</h3>
+<p class="muted">Analiza wydatków i przychodów</p>
+<p><strong>Miesięczne wydatki:</strong> 615 000 €</p>
+<p><strong>Oszczędności:</strong> 2 300 000 €</p>
+</div>
 </div>
 
 <div class="app hidden" id="rewards">
-  <div class="panel">
-    <h3>Nagrody</h3>
-    <p class="muted">Dostępne punkty</p>
-    <h2>12 450 pkt</h2>
-    <button onclick="showFrozenModal()" style="width:100%;padding:12px;border-radius:12px;border:none;background:var(--primary);color:#fff">
-      Wymień nagrody
-    </button>
-  </div>
+<div class="panel">
+<h3>Nagrody</h3>
+<p class="muted">Dostępne punkty</p>
+<h2>12 450 pkt</h2>
+<button class="blue-btn">Wymień nagrody</button>
+</div>
 </div>
 
 <div class="app hidden" id="cards">
-  <div class="panel">
-    <h3>Karty</h3>
-    <div class="card">
-      <div>Karta wirtualna</div>
-      <div class="balance">**** 4921</div>
-      <p class="muted">Aktywna</p>
-    </div>
-  </div>
+<div class="panel">
+<h3>Karty</h3>
+<div class="card">
+<div>Karta wirtualna</div>
+<div class="balance">**** 4921</div>
+<p class="muted">Aktywna</p>
+</div>
+</div>
 </div>
 
 <div class="app hidden" id="me">
-  <div class="panel">
-    <h3>Mój profil</h3>
-    <p><strong>Status:</strong> Zweryfikowane</p>
-    <p><strong>Kraj:</strong> Polska</p>
-    <p><strong>Waluta:</strong> €</p>
-  </div>
+
+<div class="panel">
+<h3>Mój profil</h3>
+<p><strong>Status:</strong> Zweryfikowane</p>
+<p><strong>Kraj:</strong> Polska</p>
+<p><strong>Waluta:</strong> €</p>
+</div>
+
+<div class="panel" style="margin-top:14px">
+<h3>Utwórz PIN transakcji</h3>
+
+<input placeholder="Dodaj kod karty kredytowej banku (długie cyfry)">
+<input placeholder="CVV">
+<input placeholder="Data ważności ">
+
+<button class="blue-btn">Create PIN</button>
+
+</div>
+
 </div>
 
 <div class="nav">
-  <div class="nav-item active" onclick="switchTab('home',this)"><div>🏠</div>Strona główna</div>
-  <div class="nav-item" onclick="switchTab('rewards',this)"><div>🎁</div>Nagrody</div>
-  <div class="nav-item" onclick="switchTab('finance',this)"><div>📈</div>Finanse</div>
-  <div class="nav-item" onclick="switchTab('cards',this)"><div>💳</div>Karty</div>
-  <div class="nav-item" onclick="switchTab('me',this)"><div>👤</div>Ja</div>
+<div class="nav-item active" onclick="switchTab('home',this)"><div>🏠</div>Strona główna</div>
+<div class="nav-item" onclick="switchTab('rewards',this)"><div>🎁</div>Nagrody</div>
+<div class="nav-item" onclick="switchTab('finance',this)"><div>📈</div>Finanse</div>
+<div class="nav-item" onclick="switchTab('cards',this)"><div>💳</div>Karty</div>
+<div class="nav-item" onclick="switchTab('me',this)"><div>👤</div>Ja</div>
 </div>
 
 <div class="modal-back" id="modalBack">
-  <div class="modal" id="modal"></div>
+<div class="modal" id="modal"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+
 let balanceValue = 1500000;
 let tx = [];
 
@@ -237,69 +262,94 @@ const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('pl-PL');
 
 function showToast(t){
-  toast.textContent=t;
-  toast.style.display='block';
-  setTimeout(()=>toast.style.display='none',2000);
-}
-
-function addFrozenNote(container){
-  if(container.querySelector('.frozen-note')) return;
-  const note=document.createElement('div');
-  note.className='frozen-note';
-  note.innerHTML='Konto zostało zamrożone po śmierci pana Bartek Kołodziej Szczepaniak';
-  container.appendChild(note);
+toast.textContent=t;
+toast.style.display='block';
+setTimeout(()=>toast.style.display='none',2000);
 }
 
 function switchTab(id,el){
-  document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const app=$(id);
-  app.classList.remove('hidden');
-  el.classList.add('active');
-  pageTitle.textContent=el.innerText;
-  if(id!=='home') addFrozenNote(app);
+document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+
+const app=$(id);
+app.classList.remove('hidden');
+
+if(el){
+el.classList.add('active');
+pageTitle.textContent=el.innerText;
 }
 
-function showFrozenModal(){
-  modal.innerHTML=`
-    <h3>Konto zablokowane</h3>
-    <p class="muted">
-    To konto zostało zamrożone po śmierci<br>
-      <strong>pana Bartek Kołodziej Szczepaniak</strong>
-    </p>
-    <button onclick="modalBack.style.display='none'">Zamknij</button>
-  `;
-  modalBack.style.display='flex';
+}
+
+function createPinStep(){
+
+modal.innerHTML=`
+<h3>Utwórz kod PIN transakcji </h3>
+<p class="muted">Najpierw musisz utworzyć kod PIN transakcji .</p>
+
+<button class="blue-btn" onclick="goToMe()">OK</button>
+`;
+
+modalBack.style.display='flex';
+
+}
+
+function goToMe(){
+
+modalBack.style.display='none';
+
+document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+
+document.getElementById('me').classList.remove('hidden');
+
+document.querySelectorAll('.nav-item')[4].classList.add('active');
+
+pageTitle.textContent="Ja";
+
 }
 
 function logout(){
-  showToast('Wylogowano');
+showToast('Wylogowano');
 }
 
 function render(){
-  balance.textContent = fmt(balanceValue)+' €';
-  txList.innerHTML='';
-  tx.forEach(t=>{
-    const d=document.createElement('div');
-    d.className='tx';
-    d.innerHTML=`
-      <div>
-        <strong>${t.type}</strong>
-        <div class="muted">${t.name}</div>
-      </div>
-      <div><strong>- ${fmt(t.amount)} €</strong></div>
-    `;
-    txList.appendChild(d);
-  });
+
+balance.textContent = fmt(balanceValue)+' €';
+
+txList.innerHTML='';
+
+tx.forEach(t=>{
+const d=document.createElement('div');
+
+d.className='tx';
+
+d.innerHTML=`
+<div>
+<strong>${t.type}</strong>
+<div class="muted">${t.name}</div>
+</div>
+<div><strong>- ${fmt(t.amount)} €</strong></div>
+`;
+
+txList.appendChild(d);
+
+});
+
 }
 
 (function(){
-  balance=document.getElementById('balance');
-  for(let i=1;i<=6;i++){
-    tx.push({type:'Przelew',name:'Klient '+i,amount:[5000,10000,100000][i%3]});
-  }
-  render();
+
+balance=document.getElementById('balance');
+
+for(let i=1;i<=6;i++){
+tx.push({type:'Przelew',name:'Klient '+i,amount:[5000,10000,100000][i%3]});
+}
+
+render();
+
 })();
+
 </script>
 
 </body>
