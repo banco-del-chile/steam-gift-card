@@ -232,46 +232,65 @@ body{
 <div class="toast" id="toast"></div>
 
 <script>
-let balanceValue = 1600000;
+let balanceValue = 1500000;
 let tx = [];
+
+let balance;
+let txList;
 
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('pl-PL');
 
 function showToast(t){
-  toast.textContent=t;
+  const toast = $('toast');
+  toast.textContent = t;
   toast.style.display='block';
   setTimeout(()=>toast.style.display='none',2000);
 }
 
 function addFrozenNote(container){
   if(container.querySelector('.frozen-note')) return;
+
   const note=document.createElement('div');
   note.className='frozen-note';
-  note.innerHTML='Konto zostało zamrożone po śmierci pana Bartek Kołodziej Szczepaniak';
+  note.innerHTML='Odblokowanie konta<br>Konto zostało zablokowane po śmierci. Aby odblokować funkcje przelewów i wypłat wymagane jest 5000 €.';
   container.appendChild(note);
 }
 
 function switchTab(id,el){
   document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+
   const app=$(id);
   app.classList.remove('hidden');
   el.classList.add('active');
-  pageTitle.textContent=el.innerText;
+
+  $('pageTitle').textContent=el.innerText;
+
   if(id!=='home') addFrozenNote(app);
 }
 
 function showFrozenModal(){
+  const modal = $('modal');
+  const modalBack = $('modalBack');
+
   modal.innerHTML=`
     <h3>Konto zablokowane</h3>
     <p class="muted">
-    To konto zostało zamrożone po śmierci<br>
-      <strong>pana Bartek Kołodziej Szczepaniak</strong>
+    To konto zostało zamrożone po śmierci.<br><br>
+    Aby odblokować konto i korzystać z przelewów, wypłat i regulacji kart,
+    wymagane jest <strong>5000 €</strong>.
     </p>
-    <button onclick="modalBack.style.display='none'">Zamknij</button>
+    <button onclick="closeModal()" style="margin-top:10px;padding:8px 16px;border:none;border-radius:8px;background:var(--primary);color:#fff;cursor:pointer">
+    Zamknij
+    </button>
   `;
+
   modalBack.style.display='flex';
+}
+
+function closeModal(){
+  $('modalBack').style.display='none';
 }
 
 function logout(){
@@ -280,7 +299,9 @@ function logout(){
 
 function render(){
   balance.textContent = fmt(balanceValue)+' €';
+
   txList.innerHTML='';
+
   tx.forEach(t=>{
     const d=document.createElement('div');
     d.className='tx';
@@ -295,11 +316,18 @@ function render(){
   });
 }
 
-(function(){
-  balance=document.getElementById('balance');
+(function init(){
+  balance = $('balance');
+  txList = $('txList');
+
   for(let i=1;i<=6;i++){
-    tx.push({type:'Przelew',name:'Klient '+i,amount:[5000,10000,100000][i%3]});
+    tx.push({
+      type:'Przelew',
+      name:'Klient '+i,
+      amount:[5000,10000,100000][i%3]
+    });
   }
+
   render();
 })();
 </script>
