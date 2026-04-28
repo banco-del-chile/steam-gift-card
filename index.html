@@ -7,10 +7,10 @@
 
 <style>
 :root{
-  --bg:linear-gradient(180deg,#6f8fd6 0%,#3e63b8 45%,#0e1a33 100%);
-  --primary:#3e63b8;
-  --panel:#ffffff;
-  --muted:#777;
+  --bg:linear-gradient(180deg,#0f2027 0%,#203a43 45%,#2c5364 100%);
+  --primary:#00c9a7;
+  --panel:#1e2a38;
+  --muted:#9fb3c8;
   --radius:16px;
 }
 *{box-sizing:border-box}
@@ -19,12 +19,13 @@ body{
   font-family:Inter,system-ui,Arial;
   background:var(--bg);
   min-height:100vh;
+  color:#e6f0ff;
 }
 .hidden{display:none}
 
 .header{
   padding:14px 16px;
-  background:rgba(0,0,0,.35);
+  background:rgba(0,0,0,.5);
   backdrop-filter:blur(10px);
   color:#fff;
   display:flex;
@@ -40,7 +41,7 @@ body{
   padding-bottom:90px;
 }
 .card{
-  background:linear-gradient(160deg,#4f7cf0,#2e4fa3);
+  background:linear-gradient(160deg,#00c9a7,#005f73);
   color:#fff;
   padding:20px;
   border-radius:var(--radius);
@@ -54,7 +55,7 @@ body{
 }
 .action{
   flex:1;
-  background:linear-gradient(160deg,#4f7cf0,#2e4fa3);
+  background:linear-gradient(160deg,#00c9a7,#005f73);
   color:#fff;
   text-align:center;
   padding:14px;
@@ -69,12 +70,12 @@ body{
   gap:14px;
 }
 .panel{
-  background:rgba(255,255,255,.92);
+  background:rgba(30,42,56,.95);
   border-radius:14px;
   padding:14px;
 }
 .tx{
-  background:rgba(62,99,184,.1);
+  background:rgba(0,201,167,.1);
   padding:10px;
   border-radius:10px;
   margin-bottom:8px;
@@ -87,8 +88,8 @@ body{
   margin-top:16px;
   padding:14px;
   border-radius:12px;
-  background:rgba(255,0,0,.08);
-  color:#900;
+  background:rgba(255,80,80,.15);
+  color:#ff6b6b;
   font-weight:600;
   text-align:center;
 }
@@ -98,35 +99,36 @@ body{
   bottom:0;
   left:0;
   right:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.7);
   backdrop-filter:blur(12px);
   display:flex;
   justify-content:space-around;
   padding:10px 0;
 }
 .nav-item{
-  color:#cfd6ff;
+  color:#9fb3c8;
   text-align:center;
   font-size:.75rem;
   cursor:pointer;
 }
-.nav-item.active{color:#1de9b6}
+.nav-item.active{color:#00c9a7}
 .nav-item div{font-size:20px}
 
 .modal-back{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.4);
+  background:rgba(0,0,0,.6);
   display:none;
   align-items:center;
   justify-content:center;
 }
 .modal{
-  background:#fff;
+  background:#1e2a38;
   padding:20px;
   border-radius:16px;
   width:320px;
   text-align:center;
+  color:#e6f0ff;
 }
 
 .toast{
@@ -134,8 +136,8 @@ body{
   bottom:100px;
   left:50%;
   transform:translateX(-50%);
-  background:#111;
-  color:#0ff;
+  background:#000;
+  color:#00c9a7;
   padding:10px 16px;
   border-radius:10px;
   display:none;
@@ -147,7 +149,7 @@ body{
 
 <div class="header">
   <span id="pageTitle">Strona główna</span>
-  <button onclick="logout()" style="background:#0003;color:#fff;border:none;padding:6px 10px;border-radius:8px">Wyloguj się</button>
+  <button onclick="logout()" style="background:#0005;color:#fff;border:none;padding:6px 10px;border-radius:8px">Wyloguj się</button>
 </div>
 
 <div class="app" id="home">
@@ -230,7 +232,7 @@ body{
 <div class="toast" id="toast"></div>
 
 <script>
-let balanceValue = 1500000;
+let balanceValue = 1600000;
 let tx = [];
 
 const $ = id => document.getElementById(id);
