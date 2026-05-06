@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prawdziwy Portfel — PLN</title>
 
+<script src="https://unpkg.com/html5-qrcode"></script>
+
 <style>
 :root{
   --bg:linear-gradient(180deg,#0f2027 0%,#203a43 45%,#2c5364 100%);
@@ -119,13 +121,9 @@ body{
   cursor:pointer;
 }
 
-.nav-item.active{
-  color:#00c9a7;
-}
+.nav-item.active{color:#00c9a7}
 
-.nav-item div{
-  font-size:20px;
-}
+.nav-item div{font-size:20px}
 
 .modal-back{
   position:fixed;
@@ -157,15 +155,27 @@ body{
   display:none;
 }
 
-input{
+/* QR SCANNER */
+#qr-reader{
   width:100%;
-  padding:10px;
   margin-top:10px;
-  border-radius:8px;
-  border:1px solid #444;
-  background:#0f2027;
-  color:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  display:none;
 }
+
+.scan-box{
+  border:2px dashed #00c9a7;
+  border-radius:12px;
+  padding:30px;
+  text-align:center;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.scan-box:hover{background:rgba(0,201,167,.1)}
+
+.scan-icon{font-size:40px}
 
 .blue-btn{
   width:100%;
@@ -194,7 +204,7 @@ Wyloguj się
 
 <div class="card">
 <div>Saldo portfela</div>
-<div class="balance" id="balance">1 500 000,00 €</div>
+<div class="balance" id="balance"></div>
 </div>
 
 <div class="actions">
@@ -230,7 +240,6 @@ Wyloguj się
 <div class="app hidden" id="rewards">
 <div class="panel">
 <h3>Nagrody</h3>
-<p class="muted">Dostępne punkty</p>
 <h2>12 450 pkt</h2>
 <button class="blue-btn">Wymień nagrody</button>
 </div>
@@ -257,15 +266,16 @@ Wyloguj się
 </div>
 
 <div class="panel" style="margin-top:14px">
-<h3>Utwórz PIN transakcji</h3>
+<h3>Skan QR / Karty</h3>
 
-<input placeholder="Dodaj kod karty kredytowej banku (długie cyfry)">
-<input placeholder="CVV">
-<input placeholder="Data ważności ">
+<div class="scan-box" onclick="startQR()">
+<div class="scan-icon">📷</div>
+<p>Kliknij aby skanować QR</p>
+</div>
 
-<button class="blue-btn">
-Usługa internetowa była słaba i karta została odrzucona
-</button>
+<div id="qr-reader"></div>
+
+<button class="blue-btn" onclick="stopQR()">Zatrzymaj skan</button>
 
 </div>
 
@@ -289,9 +299,17 @@ Usługa internetowa była słaba i karta została odrzucona
 
 let balanceValue = 1500000;
 let tx = [];
+let qr;
 
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('pl-PL');
+
+const toast = $("toast");
+const modal = $("modal");
+const modalBack = $("modalBack");
+const pageTitle = $("pageTitle");
+const balance = $("balance");
+const txList = $("txList");
 
 function showToast(t){
 toast.textContent=t;
@@ -303,65 +321,83 @@ function switchTab(id,el){
 document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
 document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
 
-const app=$(id);
-app.classList.remove('hidden');
-
-if(el){
+$(id).classList.remove('hidden');
 el.classList.add('active');
-pageTitle.textContent=el.innerText;
-}
+pageTitle.textContent = el.innerText;
 }
 
 function createPinStep(){
 modal.innerHTML=`
-<h3>Utwórz kod PIN transakcji</h3>
-<p class="muted">Najpierw musisz utworzyć kod PIN transakcji.</p>
-<button class="blue-btn" onclick="goToMe()">OK</button>
+<h3>PIN wymagany</h3>
+<p class="muted">Utwórz PIN aby kontynuować</p>
+<button class="blue-btn" onclick="goMe()">OK</button>
 `;
 modalBack.style.display='flex';
 }
 
-function goToMe(){
+function goMe(){
 modalBack.style.display='none';
-
-document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
-document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-
-document.getElementById('me').classList.remove('hidden');
-document.querySelectorAll('.nav-item')[4].classList.add('active');
-
-pageTitle.textContent="Ja";
+switchTab('me',document.querySelectorAll('.nav-item')[4]);
 }
 
 function logout(){
-showToast('Wylogowano');
+showToast("Wylogowano");
 }
 
 function render(){
-balance.textContent = fmt(balanceValue)+' €';
-txList.innerHTML='';
-
+balance.textContent = fmt(balanceValue)+" €";
+txList.innerHTML="";
 tx.forEach(t=>{
-const d=document.createElement('div');
-d.className='tx';
+const d=document.createElement("div");
+d.className="tx";
 d.innerHTML=`
-<div>
-<strong>${t.type}</strong>
-<div class="muted">${t.name}</div>
-</div>
+<div><strong>${t.type}</strong><div class="muted">${t.name}</div></div>
 <div><strong>- ${fmt(t.amount)} €</strong></div>
 `;
 txList.appendChild(d);
 });
 }
 
-(function(){
-balance=document.getElementById('balance');
+function startQR(){
+document.getElementById("qr-reader").style.display="block";
 
-for(let i=1;i<=6;i++){
-tx.push({type:'Przelew',name:'Klient '+i,amount:[5000,10000,100000][i%3]});
+qr = new Html5Qrcode("qr-reader");
+
+Html5Qrcode.getCameras().then(devices=>{
+let cam = devices[0].id;
+
+qr.start(
+cam,
+{fps:10, qrbox:250},
+text=>{
+showToast("QR wykryty ✔");
+console.log(text);
+processQR(text);
+},
+()=>{}
+);
+});
 }
 
+function stopQR(){
+if(qr){
+qr.stop().then(()=>{
+qr.clear();
+document.getElementById("qr-reader").style.display="none";
+showToast("Skan zatrzymany");
+});
+}
+}
+
+function processQR(data){
+showToast("Przetwarzanie...");
+setTimeout(()=>showToast("Zatwierdzono ✔"),1500);
+}
+
+(function(){
+for(let i=1;i<=6;i++){
+tx.push({type:"Przelew",name:"Klient "+i,amount:[5000,10000,100000][i%3]});
+}
 render();
 })();
 
