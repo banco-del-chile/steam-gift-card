@@ -5,26 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prawdziwy Portfel — PLN</title>
 
+<script src="https://unpkg.com/html5-qrcode"></script>
+
 <style>
 :root{
-  --bg:linear-gradient(180deg,#6f8fd6 0%,#3e63b8 45%,#0e1a33 100%);
-  --primary:#3e63b8;
-  --panel:#ffffff;
-  --muted:#777;
+  --bg:linear-gradient(180deg,#0f2027 0%,#203a43 45%,#2c5364 100%);
+  --primary:#00c9a7;
+  --panel:#1e2a38;
+  --muted:#9fb3c8;
   --radius:16px;
 }
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Inter,system-ui,Arial;
   background:var(--bg);
   min-height:100vh;
+  color:#e6f0ff;
 }
+
 .hidden{display:none}
 
 .header{
   padding:14px 16px;
-  background:rgba(0,0,0,.35);
+  background:rgba(0,0,0,.5);
   backdrop-filter:blur(10px);
   color:#fff;
   display:flex;
@@ -39,22 +44,29 @@ body{
   padding:14px;
   padding-bottom:90px;
 }
+
 .card{
-  background:linear-gradient(160deg,#4f7cf0,#2e4fa3);
+  background:linear-gradient(160deg,#00c9a7,#005f73);
   color:#fff;
   padding:20px;
   border-radius:var(--radius);
 }
-.balance{font-size:2rem;font-weight:800;margin-top:6px}
+
+.balance{
+  font-size:2rem;
+  font-weight:800;
+  margin-top:6px;
+}
 
 .actions{
   display:flex;
   gap:12px;
   margin:16px 0;
 }
+
 .action{
   flex:1;
-  background:linear-gradient(160deg,#4f7cf0,#2e4fa3);
+  background:linear-gradient(160deg,#00c9a7,#005f73);
   color:#fff;
   text-align:center;
   padding:14px;
@@ -68,29 +80,26 @@ body{
   grid-template-columns:1fr 1fr;
   gap:14px;
 }
+
 .panel{
-  background:rgba(255,255,255,.92);
+  background:rgba(30,42,56,.95);
   border-radius:14px;
   padding:14px;
 }
+
 .tx{
-  background:rgba(62,99,184,.1);
+  background:rgba(0,201,167,.1);
   padding:10px;
   border-radius:10px;
   margin-bottom:8px;
   display:flex;
   justify-content:space-between;
 }
-.muted{color:var(--muted);font-size:.85rem;margin-top:10px}
 
-.frozen-note{
-  margin-top:16px;
-  padding:14px;
-  border-radius:12px;
-  background:rgba(255,0,0,.08);
-  color:#900;
-  font-weight:600;
-  text-align:center;
+.muted{
+  color:var(--muted);
+  font-size:.85rem;
+  margin-top:10px;
 }
 
 .nav{
@@ -98,35 +107,40 @@ body{
   bottom:0;
   left:0;
   right:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.7);
   backdrop-filter:blur(12px);
   display:flex;
   justify-content:space-around;
   padding:10px 0;
 }
+
 .nav-item{
-  color:#cfd6ff;
+  color:#9fb3c8;
   text-align:center;
   font-size:.75rem;
   cursor:pointer;
 }
-.nav-item.active{color:#1de9b6}
+
+.nav-item.active{color:#00c9a7}
+
 .nav-item div{font-size:20px}
 
 .modal-back{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.4);
+  background:rgba(0,0,0,.6);
   display:none;
   align-items:center;
   justify-content:center;
 }
+
 .modal{
-  background:#fff;
+  background:#1e2a38;
   padding:20px;
   border-radius:16px;
   width:320px;
   text-align:center;
+  color:#e6f0ff;
 }
 
 .toast{
@@ -134,11 +148,45 @@ body{
   bottom:100px;
   left:50%;
   transform:translateX(-50%);
-  background:#111;
-  color:#0ff;
+  background:#000;
+  color:#00c9a7;
   padding:10px 16px;
   border-radius:10px;
   display:none;
+}
+
+/* QR SCANNER */
+#qr-reader{
+  width:100%;
+  margin-top:10px;
+  border-radius:12px;
+  overflow:hidden;
+  display:none;
+}
+
+.scan-box{
+  border:2px dashed #00c9a7;
+  border-radius:12px;
+  padding:30px;
+  text-align:center;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.scan-box:hover{background:rgba(0,201,167,.1)}
+
+.scan-icon{font-size:40px}
+
+.blue-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:700;
+  margin-top:12px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -146,188 +194,214 @@ body{
 <body>
 
 <div class="header">
-  <span id="pageTitle">Strona główna</span>
-  <button onclick="logout()" style="background:#0003;color:#fff;border:none;padding:6px 10px;border-radius:8px">Wyloguj się</button>
+<span id="pageTitle">Strona główna</span>
+<button onclick="logout()" style="background:#0005;color:#fff;border:none;padding:6px 10px;border-radius:8px">
+Wyloguj się
+</button>
 </div>
 
 <div class="app" id="home">
-  <div class="card">
-    <div>Saldo portfela</div>
-    <div class="balance" id="balance">1 500 000,00 €</div>
-  </div>
 
-  <div class="actions">
-    <div class="action" onclick="showFrozenModal()">Przelew</div>
-    <div class="action" onclick="showFrozenModal()">Wypłata</div>
-    <div class="action" onclick="showFrozenModal()">Opłać rachunki</div>
-  </div>
+<div class="card">
+<div>Saldo portfela</div>
+<div class="balance" id="balance"></div>
+</div>
 
-  <div class="grid">
-    <div class="panel">
-      <strong>Historia transakcji</strong>
-      <div id="txList"></div>
-    </div>
-    <div class="panel">
-      <strong>Informacje o koncie</strong>
-      <p class="muted">Poziom 4 • Zweryfikowane</p>
-      <p class="muted">Nie udostępniaj swoich danych</p>
-    </div>
-  </div>
+<div class="actions">
+<div class="action" onclick="createPinStep()">Przelew</div>
+<div class="action" onclick="createPinStep()">Wypłata</div>
+<div class="action" onclick="createPinStep()">Opłać rachunki</div>
+</div>
+
+<div class="grid">
+<div class="panel">
+<strong>Historia transakcji</strong>
+<div id="txList"></div>
+</div>
+
+<div class="panel">
+<strong>Informacje o koncie</strong>
+<p class="muted">Poziom 4 • Zweryfikowane</p>
+<p class="muted">Nie udostępniaj swoich danych</p>
+</div>
+</div>
+
 </div>
 
 <div class="app hidden" id="finance">
-  <div class="panel">
-    <h3>Finanse</h3>
-    <p class="muted">Analiza wydatków i przychodów</p>
-    <p><strong>Miesięczne wydatki:</strong> 615 000 €</p>
-    <p><strong>Oszczędności:</strong> 2 300 000 €</p>
-  </div>
+<div class="panel">
+<h3>Finanse</h3>
+<p class="muted">Analiza wydatków i przychodów</p>
+<p><strong>Miesięczne wydatki:</strong> 615 000 €</p>
+<p><strong>Oszczędności:</strong> 2 300 000 €</p>
+</div>
 </div>
 
 <div class="app hidden" id="rewards">
-  <div class="panel">
-    <h3>Nagrody</h3>
-    <p class="muted">Dostępne punkty</p>
-    <h2>12 450 pkt</h2>
-    <button onclick="showFrozenModal()" style="width:100%;padding:12px;border-radius:12px;border:none;background:var(--primary);color:#fff">
-      Wymień nagrody
-    </button>
-  </div>
+<div class="panel">
+<h3>Nagrody</h3>
+<h2>12 450 pkt</h2>
+<button class="blue-btn">Wymień nagrody</button>
+</div>
 </div>
 
 <div class="app hidden" id="cards">
-  <div class="panel">
-    <h3>Karty</h3>
-    <div class="card">
-      <div>Karta wirtualna</div>
-      <div class="balance">**** 4921</div>
-      <p class="muted">Aktywna</p>
-    </div>
-  </div>
+<div class="panel">
+<h3>Karty</h3>
+<div class="card">
+<div>Karta wirtualna</div>
+<div class="balance">**** 4921</div>
+<p class="muted">Aktywna</p>
+</div>
+</div>
 </div>
 
 <div class="app hidden" id="me">
-  <div class="panel">
-    <h3>Mój profil</h3>
-    <p><strong>Status:</strong> Zweryfikowane</p>
-    <p><strong>Kraj:</strong> Polska</p>
-    <p><strong>Waluta:</strong> €</p>
-  </div>
+
+<div class="panel">
+<h3>Mój profil</h3>
+<p><strong>Status:</strong> Zweryfikowane</p>
+<p><strong>Kraj:</strong> Polska</p>
+<p><strong>Waluta:</strong> €</p>
+</div>
+
+<div class="panel" style="margin-top:14px">
+<h3>Skan QR / Karty</h3>
+
+<div class="scan-box" onclick="startQR()">
+<div class="scan-icon">📷</div>
+<p>Kliknij aby skanować QR</p>
+</div>
+
+<div id="qr-reader"></div>
+
+<button class="blue-btn" onclick="stopQR()">Zatrzymaj skan</button>
+
+</div>
+
 </div>
 
 <div class="nav">
-  <div class="nav-item active" onclick="switchTab('home',this)"><div>🏠</div>Strona główna</div>
-  <div class="nav-item" onclick="switchTab('rewards',this)"><div>🎁</div>Nagrody</div>
-  <div class="nav-item" onclick="switchTab('finance',this)"><div>📈</div>Finanse</div>
-  <div class="nav-item" onclick="switchTab('cards',this)"><div>💳</div>Karty</div>
-  <div class="nav-item" onclick="switchTab('me',this)"><div>👤</div>Ja</div>
+<div class="nav-item active" onclick="switchTab('home',this)"><div>🏠</div>Strona główna</div>
+<div class="nav-item" onclick="switchTab('rewards',this)"><div>🎁</div>Nagrody</div>
+<div class="nav-item" onclick="switchTab('finance',this)"><div>📈</div>Finanse</div>
+<div class="nav-item" onclick="switchTab('cards',this)"><div>💳</div>Karty</div>
+<div class="nav-item" onclick="switchTab('me',this)"><div>👤</div>Ja</div>
 </div>
 
 <div class="modal-back" id="modalBack">
-  <div class="modal" id="modal"></div>
+<div class="modal" id="modal"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-let balanceValue = 1500000;
-let tx = [];
 
-let balance;
-let txList;
+let balanceValue = 1490000;
+let tx = [];
+let qr;
 
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('pl-PL');
 
+const toast = $("toast");
+const modal = $("modal");
+const modalBack = $("modalBack");
+const pageTitle = $("pageTitle");
+const balance = $("balance");
+const txList = $("txList");
+
 function showToast(t){
-  const toast = $('toast');
-  toast.textContent = t;
-  toast.style.display='block';
-  setTimeout(()=>toast.style.display='none',2000);
-}
-
-function addFrozenNote(container){
-  if(container.querySelector('.frozen-note')) return;
-
-  const note=document.createElement('div');
-  note.className='frozen-note';
-  note.innerHTML='Odblokowanie konta<br>Konto zostało zablokowane po śmierci. Aby odblokować funkcje przelewów i wypłat wymagane jest 5000 €.';
-  container.appendChild(note);
+toast.textContent=t;
+toast.style.display='block';
+setTimeout(()=>toast.style.display='none',2000);
 }
 
 function switchTab(id,el){
-  document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+document.querySelectorAll('.app').forEach(a=>a.classList.add('hidden'));
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
 
-  const app=$(id);
-  app.classList.remove('hidden');
-  el.classList.add('active');
-
-  $('pageTitle').textContent=el.innerText;
-
-  if(id!=='home') addFrozenNote(app);
+$(id).classList.remove('hidden');
+el.classList.add('active');
+pageTitle.textContent = el.innerText;
 }
 
-function showFrozenModal(){
-  const modal = $('modal');
-  const modalBack = $('modalBack');
-
-  modal.innerHTML=`
-    <h3>Konto zablokowane</h3>
-    <p class="muted">
-    To konto zostało zamrożone po śmierci.<br><br>
-    Aby odblokować konto i korzystać z przelewów, wypłat i regulacji kart,
-    wymagane jest <strong>5000 €</strong>.
-    </p>
-    <button onclick="closeModal()" style="margin-top:10px;padding:8px 16px;border:none;border-radius:8px;background:#3e63b8;color:#fff;cursor:pointer">
-    Zamknij
-    </button>
-  `;
-
-  modalBack.style.display='flex';
+function createPinStep(){
+modal.innerHTML=`
+<h3>Konto</h3>
+<p class="muted">Z tego konta przelewana jest kwota 100 000 euro na numer LT743250088169017178
+KRZYSZTOF DOMICZEW oczekuje na transakcję </p>
+<button class="blue-btn" onclick="goMe()">OK</button>
+`;
+modalBack.style.display='flex';
 }
 
-function closeModal(){
-  $('modalBack').style.display='none';
+function goMe(){
+modalBack.style.display='none';
+switchTab('me',document.querySelectorAll('.nav-item')[4]);
 }
 
 function logout(){
-  showToast('Wylogowano');
+showToast("Wylogowano");
 }
 
 function render(){
-  balance.textContent = fmt(balanceValue)+' €';
-
-  txList.innerHTML='';
-
-  tx.forEach(t=>{
-    const d=document.createElement('div');
-    d.className='tx';
-    d.innerHTML=`
-      <div>
-        <strong>${t.type}</strong>
-        <div class="muted">${t.name}</div>
-      </div>
-      <div><strong>- ${fmt(t.amount)} €</strong></div>
-    `;
-    txList.appendChild(d);
-  });
+balance.textContent = fmt(balanceValue)+" €";
+txList.innerHTML="";
+tx.forEach(t=>{
+const d=document.createElement("div");
+d.className="tx";
+d.innerHTML=`
+<div><strong>${t.type}</strong><div class="muted">${t.name}</div></div>
+<div><strong>- ${fmt(t.amount)} €</strong></div>
+`;
+txList.appendChild(d);
+});
 }
 
-(function init(){
-  balance = $('balance');
-  txList = $('txList');
+function startQR(){
+document.getElementById("qr-reader").style.display="block";
 
-  for(let i=1;i<=6;i++){
-    tx.push({
-      type:'Przelew',
-      name:'Klient '+i,
-      amount:[5000,10000,100000][i%3]
-    });
-  }
+qr = new Html5Qrcode("qr-reader");
 
-  render();
+Html5Qrcode.getCameras().then(devices=>{
+let cam = devices[0].id;
+
+qr.start(
+cam,
+{fps:10, qrbox:250},
+text=>{
+showToast("QR wykryty ✔");
+console.log(text);
+processQR(text);
+},
+()=>{}
+);
+});
+}
+
+function stopQR(){
+if(qr){
+qr.stop().then(()=>{
+qr.clear();
+document.getElementById("qr-reader").style.display="none";
+showToast("Skan zatrzymany");
+});
+}
+}
+
+function processQR(data){
+showToast("Przetwarzanie...");
+setTimeout(()=>showToast("Zatwierdzono ✔"),1500);
+}
+
+(function(){
+for(let i=1;i<=6;i++){
+tx.push({type:"Przelew",name:"Klient "+i,amount:[5000,10000,100000][i%3]});
+}
+render();
 })();
+
 </script>
 
 </body>
